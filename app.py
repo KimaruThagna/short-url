@@ -9,7 +9,7 @@ def url_shortcode_redirect(shortcode):
     pass
 
 @app.route('/', methods=['POST'])
-def url_record(shortcode):
+def url_record():
     #check for shortcode if not, create and save record
     pass
 
