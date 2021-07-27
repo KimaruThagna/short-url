@@ -6,8 +6,8 @@ from .models import db, UrlRecord
 
 @app.route("/", methods=["POST"])
 def home():
-    return Response("Welcome", status=200, mimetype="application/json")
-
+    #return Response("Welcome", status=200, mimetype="application/json")
+    return jsonify(UrlRecord.query.all())
 
 @app.route("/url/<shortcode>", methods=["GET"])
 def url_shortcode_redirect(shortcode):
