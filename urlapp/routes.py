@@ -4,10 +4,11 @@ from flask import request, redirect, jsonify, Response
 from .models import db, UrlRecord
 
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET"])
 def home():
     #return Response("Welcome", status=200, mimetype="application/json")
-    return jsonify(UrlRecord.query.all())
+    #return jsonify(json_list=UrlRecord.query.all())
+    return jsonify(list(map(lambda x: x.to_dict(), UrlRecord.query.all())))
 
 @app.route("/url/<shortcode>", methods=["GET"])
 def url_shortcode_redirect(shortcode):
