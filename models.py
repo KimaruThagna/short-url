@@ -12,9 +12,9 @@ class UrlRecord(db.Model):
 class UrlStats(db.Model):
     __tablename__ = "urlstats"
     id = db.Column(db.Integer, primary_key=True)
-    shortcode_id = db.Column(db.Integer, db.ForeignKey("urlrecord.id"))
-    shortcode = db.relationship(
-        "Request", backref=db.backref("urlrecord", uselist=False)
+    urlrecord_id = db.Column(db.Integer, db.ForeignKey("urlrecord.id"))
+    urlrecord = db.relationship(
+        "UrlRecord", backref=db.backref("urlrecord", uselist=False)
     )
     access_count = db.Column(db.Integer,default=0)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
