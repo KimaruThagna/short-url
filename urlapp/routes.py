@@ -22,7 +22,7 @@ def url_shortcode_redirect(shortcode):
         return Response(f"URL does not exist", status=404, mimetype="application/json")
 
 
-@app.route("url/add", methods=["POST"])
+@app.route("/url/add", methods=["POST"])
 def url_record():
     data = request.get_json(force=True)  # incase other content type was used
     short_code = ""
