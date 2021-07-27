@@ -51,7 +51,7 @@ def url_record():
             "Record successfully added", status=201, mimetype="application/json"
         )
     except Exception as e:
-        return Response(f"Error{e}", status=400, mimetype="application/json")
+        return Response(f"Error \n {e}", status=400, mimetype="application/json")
 
 
 @app.route("/url/<shortcode>/stats", methods=["GET"])
