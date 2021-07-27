@@ -16,7 +16,12 @@ class UrlStats(db.Model):
     shortcode = db.relationship(
         "Request", backref=db.backref("urlrecord", uselist=False)
     )
+    access_count = db.Column(db.Integer,default=0)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
     )
+
+    def update_access_count(self):
+        self.access_count += 1
+        self.save()
