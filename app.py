@@ -1,35 +1,55 @@
 import random, string
 from flask import current_app as app
-from flask import request, redirect, jsonify
-from .models import db, UrlRecord, UrlStats
+from flask import request, redirect, jsonify, Response
+from .models import db, UrlRecord
+
+
+@app.route('url/add', methods=['POST'])
+def home():
+    return Response("Welcome", status=200, mimetype='application/json')
 
 @app.route('/url/<shortcode>', methods=['GET'])
 def url_shortcode_redirect(shortcode):
     # retrieve url record using shortcode
     url_obj = UrlRecord.query.filter_by(shortcode=shortcode).first()
     # update count
-    stats_obj = UrlStats.query.filter_by(Urlrecord=url_obj).first()
-    stats_obj.update_access_count()
+    url_obj.update_access_count()
     #redirect using main url
     return redirect(url_obj.url)
 
-@app.route('/', methods=['POST'])
+@app.route('url/add', methods=['POST'])
 def url_record():
-    short_code = ''.join(random.choice(string.ascii_uppercase + 
+    data = request.get_json(force=True) #incase other content type was used
+    short_code = ''
+    if 'shortcode' in data: # user provided their shortcode
+            short_code = data['shortcode'],
+    else: 
+        
+        short_code = ''.join(random.choice(string.ascii_uppercase + 
                                        string.ascii_lowercase + 
                                        string.digits) for _ in range(6))
-    #check for shortcode if not, create and save record
-    pass
+    new_urlrecord = UrlRecord(
+            url = data['url'],
+            shortcode = short_code,
+            
+        )
+    
+    try:
+         db.session.add(new_urlrecord)
+         db.session.commit()  # Commits all changes     
+         return Response("Record successfully added", status=201, mimetype='application/json')
+    except Exception as e:
+        return Response(f'Error{e}', status=400, mimetype='application/json')
+
 
 @app.route('/url/<shortcode>/stats', methods=['GET'])
 def url_shortcode_stats(shortcode):
     #retrieve stats from stats and record table
     url_obj = UrlRecord.query.filter_by(shortcode=shortcode).first()
-    stats_obj = UrlStats.query.filter_by(Urlrecord=url_obj).first()
     stats = {
         "registered_on": url_obj.created_on,
-        "last_accessed_on": stats_obj.updated_on,
-        "access_count": stats_obj.access_count
+        "last_accessed_on": url_obj.updated_on,
+        "access_count": url_obj.access_count
     }
     return jsonify(stats)
     
