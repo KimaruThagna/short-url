@@ -6,9 +6,8 @@ from .models import db, UrlRecord
 
 @app.route("/", methods=["GET"])
 def home():
-    #return Response("Welcome", status=200, mimetype="application/json")
-    #return jsonify(json_list=UrlRecord.query.all())
-    return jsonify(list(map(lambda x: x.to_dict(), UrlRecord.query.all())))
+    return Response("Welcome", status=200, mimetype="application/json")
+    #return jsonify(list(map(lambda x: x.to_dict(), UrlRecord.query.all())))
 
 @app.route("/url/<shortcode>", methods=["GET"])
 def url_shortcode_redirect(shortcode):
@@ -28,7 +27,7 @@ def url_record():
     data = request.get_json(force=True)  # incase other content type was used
     short_code = ""
     if "shortcode" in data:  # user provided their shortcode
-        short_code = (data["shortcode"],)
+        short_code = data["shortcode"]
         if len(short_code) < 4:
             return Response(
                 f"Error. Shortcode should contain at least 4 characters",
